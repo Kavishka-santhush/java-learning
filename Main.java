@@ -1,58 +1,67 @@
-// 1. Car Class with private constructor and a static Nested Builder Class
-class Car {
-    private String brand;
-    private int year;
-    private String color;
-    private boolean hasSunroof;
+import java.util.List;
+import java.util.ArrayList;
 
-    // Private constructor taking Builder as argument
-    private Car(CarBuilder builder) {
-        this.brand = builder.brand;
-        this.year = builder.year;
-        this.color = builder.color;
-        this.hasSunroof = builder.hasSunroof;
+// 1. Observer Interface
+interface Observer {
+    void update(String status);
+}
+
+// 2. Subject (The object being monitored)
+class CarTelemetry {
+    private List<Observer> observers = new ArrayList<>();
+    private String carStatus;
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
     }
 
-    public void displayCar() {
-        System.out.println("Car Details -> Brand: " + brand + ", Year: " + year + ", Color: " + color + ", Sunroof: " + hasSunroof);
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
     }
 
-    // 2. Static Nested Builder Class
-    public static class CarBuilder {
-        private String brand;
-        private int year;
-        private String color = "White"; // Default value
-        private boolean hasSunroof = false;
+    public void setCarStatus(String status) {
+        this.carStatus = status;
+        notifyObservers(); // Notify all registered observers when status changes
+    }
 
-        public CarBuilder(String brand, int year) {
-            this.brand = brand;
-            this.year = year;
+    private void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(carStatus);
         }
+    }
+}
 
-        public CarBuilder setColor(String color) {
-            this.color = color;
-            return this; // Returning builder for method chaining
-        }
+// 3. Concrete Observers (Dashboard Display and Mobile App)
+class DashboardDisplay implements Observer {
+    @Override
+    public void update(String status) {
+        System.out.println("Dashboard Alert: Car status changed to -> " + status);
+    }
+}
 
-        public CarBuilder setSunroof(boolean hasSunroof) {
-            this.hasSunroof = hasSunroof;
-            return this;
-        }
-
-        public Car build() {
-            return new Car(this); // Creating the final Car object
-        }
+class MobileApp implements Observer {
+    @Override
+    public void update(String status) {
+        System.out.println("Mobile Notification: Warning! Car status is now -> " + status);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        // Using Builder Pattern with Method Chaining
-        Car myCar = new Car.CarBuilder("Tesla", 2026)
-                .setColor("Midnight Black")
-                .setSunroof(true)
-                .build();
+        CarTelemetry telemetry = new CarTelemetry();
 
-        myCar.displayCar();
+        // Registering observers
+        DashboardDisplay dashboard = new DashboardDisplay();
+        MobileApp mobileApp = new MobileApp();
+
+        telemetry.addObserver(dashboard);
+        telemetry.addObserver(mobileApp);
+
+        // Changing car status triggers all observers automatically
+        System.out.println("--- Changing Status to OVERHEATING ---");
+        telemetry.setCarStatus("OVERHEATING");
+
+        System.out.println("\n--- Changing Status to NORMAL ---");
+        telemetry.setCarStatus("NORMAL");
     }
 }
