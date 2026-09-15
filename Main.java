@@ -1,57 +1,46 @@
-// 1. SRP: Car class only holds car properties (Single Responsibility)
-class Car {
-    private String brand;
-    private int year;
-
-    public Car(String brand, int year) {
-        this.brand = brand;
-        this.year = year;
-    }
-
-    public String getBrand() { return brand; }
-    public int getYear() { return year; }
+// 1. ISP: Segregating interfaces so classes only implement what they need
+interface Drivable {
+    void drive();
 }
 
-// Separate class responsible only for database operations (SRP)
-class CarRepository {
-    public void saveToDatabase(Car car) {
-        System.out.println("Saving " + car.getBrand() + " to the database...");
-    }
+interface Chargeable {
+    void charge();
 }
 
-// 2. OCP: Printing interface/class which is open for extension
-interface CarPrinter {
-    void print(Car car);
-}
-
-class ConsolePrinter implements CarPrinter {
+// 2. Low-level module implementing specific interface
+class ElectricCar implements Drivable, Chargeable {
     @Override
-    public void print(Car car) {
-        System.out.println("Printing Car Details -> Brand: " + car.getBrand() + ", Year: " + car.getYear());
+    public void drive() {
+        System.out.println("Electric car is driving smoothly.");
+    }
+
+    @Override
+    public void charge() {
+        System.out.println("Charging electric car battery.");
     }
 }
 
-// If we want a JSON printer tomorrow, we just implement CarPrinter without modifying existing code (OCP)
-class JsonPrinter implements CarPrinter {
-    @Override
-    public void print(Car car) {
-        System.out.println("{\"brand\": \"" + car.getBrand() + "\", \"year\": " + car.getYear() + "}");
+// 3. High-level module depending on Abstraction (DIP), not on concrete ElectricCar class
+class VehicleManager {
+    private Drivable vehicle;
+
+    public VehicleManager(Drivable vehicle) {
+        this.vehicle = vehicle; // Dependency injection via interface
+    }
+
+    public void startJourney() {
+        vehicle.drive();
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Car myCar = new Car("Tesla", 2026);
-
-        // Saving using repository (SRP)
-        CarRepository repo = new CarRepository();
-        repo.saveToDatabase(myCar);
-
-        // Printing using polymorphism and OCP
-        CarPrinter printer1 = new ConsolePrinter();
-        printer1.print(myCar);
-
-        CarPrinter printer2 = new JsonPrinter();
-        printer2.print(myCar);
+        ElectricCar myTesla = new ElectricCar();
+        
+        // Using DIP: VehicleManager depends on Drivable interface abstraction
+        VehicleManager manager = new VehicleManager(myTesla);
+        manager.startJourney();
+        
+        myTesla.charge();
     }
 }
