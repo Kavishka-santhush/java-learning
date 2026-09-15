@@ -1,51 +1,43 @@
-// 1. Strategy Interface
-interface DrivingStrategy {
-    void drive();
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+
+// 1. Creating a Custom Annotation
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@interface CarInfo {
+    String project();
+    int version() default 1;
 }
 
-// 2. Concrete Strategies
-class EcoMode implements DrivingStrategy {
-    @Override
-    public void drive() {
-        System.out.println("Driving in Eco Mode: Maximizing fuel efficiency and low acceleration.");
-    }
-}
-
-class SportMode implements DrivingStrategy {
-    @Override
-    public void drive() {
-        System.out.println("Driving in Sport Mode: Maximum power, fast acceleration, and stiff steering!");
-    }
-}
-
-// 3. Context Class that uses a DrivingStrategy
-class CarContext {
-    private DrivingStrategy strategy;
-
-    // Setting initial strategy
-    public CarContext(DrivingStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    // Changing strategy at runtime
-    public void setStrategy(DrivingStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public void executeDrive() {
-        strategy.drive();
+// 2. Class using the Custom Annotation
+class SmartCar {
+    @CarInfo(project = "Autonomous Driving", version = 2)
+    public void startAPU() {
+        System.out.println("APU started successfully.");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        // Starting car in Eco Mode
-        CarContext myCar = new CarContext(new EcoMode());
-        myCar.executeDrive();
+        SmartCar car = new SmartCar();
 
-        // Switching to Sport Mode at runtime
-        System.out.println("\n--- Switching to Sport Mode ---");
-        myCar.setStrategy(new SportMode());
-        myCar.executeDrive();
+        try {
+            // 3. Using Reflection to inspect annotations at runtime
+            Method method = car.getClass().getMethod("startAPU");
+            
+            if (method.isAnnotationPresent(CarInfo.class)) {
+                CarInfo info = method.getAnnotation(CarInfo.class);
+                System.out.println("Annotation Data Found -> Project: " + info.project() + ", Version: " + info.version());
+            }
+
+            // Invoking the method using reflection
+            method.invoke(car);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
