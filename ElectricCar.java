@@ -1,4 +1,4 @@
-class ElectricCar extends Vehicle {
+class ElectricCar extends Vehicle implements Chargeable {
     int batteryCapacity;
 
     public ElectricCar(String brand, int year, int batteryCapacity) {
@@ -6,13 +6,15 @@ class ElectricCar extends Vehicle {
         this.batteryCapacity = batteryCapacity;
     }
 
-    // Method Overriding (Parent Class එකේ තියෙන startEngine method එක override කිරීම)
+    // Implementing the abstract method from Vehicle
     @Override
-    public void startEngine() {
-        System.out.println("Electric car silent start: Systems online!");
+    public void drive() {
+        System.out.println(brand + " is driving silently using electric power.");
     }
 
-    public void displayInfo() {
-        System.out.println("Brand: " + brand + ", Year: " + year + ", Battery: " + batteryCapacity + "kWh");
+    // Implementing the method from Chargeable interface
+    @Override
+    public void chargeBattery() {
+        System.out.println(brand + " battery is charging. Capacity: " + batteryCapacity + "kWh");
     }
 }

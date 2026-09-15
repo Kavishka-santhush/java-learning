@@ -1,4 +1,4 @@
-class Vehicle {
+abstract class Vehicle {
     protected String brand;
     int year;
 
@@ -7,17 +7,11 @@ class Vehicle {
         this.year = year;
     }
 
-    // Method Overriding සඳහා පාවිච්චි කරන Base Method එක
-    public void startEngine() {
-        System.out.println("Vehicle engine is starting...");
-    }
+    // Abstract method (Child classes must implement this)
+    public abstract void drive();
 
-    // Method Overloading (একම නමින් methods දෙකක්, parameters වෙනස්)
-    public void accelerate() {
-        System.out.println("Vehicle is accelerating...");
-    }
-
-    public void accelerate(int speed) {
-        System.out.println("Vehicle is accelerating at " + speed + " km/h");
+    // Normal method
+    public void displayInfo() {
+        System.out.println("Brand: " + brand + ", Year: " + year);
     }
 }
