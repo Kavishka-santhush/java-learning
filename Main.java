@@ -1,10 +1,13 @@
-// Blueprint (Class)
 class Car {
-    // Attributes (State)
     String brand;
     int year;
 
-    // Method (Behavior)
+    // Parametrized Constructor
+    public Car(String brand, int year) {
+        this.brand = brand; // 'this' refers to the current object
+        this.year = year;
+    }
+
     public void displayInfo() {
         System.out.println("Car Brand: " + brand + ", Year: " + year);
     }
@@ -12,17 +15,10 @@ class Car {
 
 public class Main {
     public static void main(String[] args) {
-        // Creating Object 1 (Stored in Heap, reference in Stack)
-        Car car1 = new Car();
-        car1.brand = "Toyota";
-        car1.year = 2022;
+        // Creating objects and passing values directly via constructor
+        Car car1 = new Car("Toyota", 2022);
+        Car car2 = new Car("Honda", 2024);
 
-        // Creating Object 2
-        Car car2 = new Car();
-        car2.brand = "Honda";
-        car2.year = 2024;
-
-        // Calling methods
         car1.displayInfo();
         car2.displayInfo();
     }
