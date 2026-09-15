@@ -1,29 +1,26 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+// Generic Class with type parameter 'T'
+class Box<T> {
+    private T item;
+
+    public void setItem(T item) {
+        this.item = item;
+    }
+
+    public T getItem() {
+        return item;
+    }
+}
 
 public class Main {
-    public static void main(String[] args) {
-        // 1. ArrayList Example (Storing a list of car brands)
-        ArrayList<String> carBrands = new ArrayList<>();
-        
-        carBrands.add("Toyota");
-        carBrands.add("Honda");
-        carBrands.add("Tesla");
+    public static void main(String[] args) { 
+        // 1. Creating a Box for Strings
+        Box<String> stringBox = new Box<>();
+        stringBox.setItem("Electric Car Battery");
+        System.out.println("String Box contains: " + stringBox.getItem());
 
-        System.out.println("--- Car Brands List ---");
-        for (String brand : carBrands) {
-            System.out.println(brand);
-        }
-
-        // 2. HashMap Example (Storing car brand and its model count as Key-Value)
-        HashMap<String, Integer> carModelsCount = new HashMap<>();
-        
-        carModelsCount.put("Toyota", 15);
-        carModelsCount.put("Honda", 10);
-        carModelsCount.put("Tesla", 5);
-
-        System.out.println("\n--- Car Models Count (HashMap) ---");
-        System.out.println("Toyota models available: " + carModelsCount.get("Toyota"));
-        System.out.println("Tesla models available: " + carModelsCount.get("Tesla"));
+        // 2. Creating a Box for Integers
+        Box<Integer> intBox = new Box<>();
+        intBox.setItem(5000);
+        System.out.println("Integer Box contains: " + intBox.getItem());
     }
 }
