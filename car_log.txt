@@ -1,0 +1,3 @@
+Car Inventory System Log:
+1. Tesla Model S - 2025
+2. BMW V8 Turbo - 2024
