@@ -1,35 +1,58 @@
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+// 1. Car Class with private constructor and a static Nested Builder Class
+class Car {
+    private String brand;
+    private int year;
+    private String color;
+    private boolean hasSunroof;
+
+    // Private constructor taking Builder as argument
+    private Car(CarBuilder builder) {
+        this.brand = builder.brand;
+        this.year = builder.year;
+        this.color = builder.color;
+        this.hasSunroof = builder.hasSunroof;
+    }
+
+    public void displayCar() {
+        System.out.println("Car Details -> Brand: " + brand + ", Year: " + year + ", Color: " + color + ", Sunroof: " + hasSunroof);
+    }
+
+    // 2. Static Nested Builder Class
+    public static class CarBuilder {
+        private String brand;
+        private int year;
+        private String color = "White"; // Default value
+        private boolean hasSunroof = false;
+
+        public CarBuilder(String brand, int year) {
+            this.brand = brand;
+            this.year = year;
+        }
+
+        public CarBuilder setColor(String color) {
+            this.color = color;
+            return this; // Returning builder for method chaining
+        }
+
+        public CarBuilder setSunroof(boolean hasSunroof) {
+            this.hasSunroof = hasSunroof;
+            return this;
+        }
+
+        public Car build() {
+            return new Car(this); // Creating the final Car object
+        }
+    }
+}
 
 public class Main {
     public static void main(String[] args) {
-        String fileName = "car_log.txt";
+        // Using Builder Pattern with Method Chaining
+        Car myCar = new Car.CarBuilder("Tesla", 2026)
+                .setColor("Midnight Black")
+                .setSunroof(true)
+                .build();
 
-        // 1. Writing to a file using FileWriter
-        try {
-            FileWriter writer = new FileWriter(fileName);
-            writer.write("Car Inventory System Log:\n");
-            writer.write("1. Tesla Model S - 2025\n");
-            writer.write("2. BMW V8 Turbo - 2024\n");
-            writer.close(); // Always close the writer
-            System.out.println("Data successfully written to " + fileName);
-        } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file: " + e.getMessage());
-        }
-
-        // 2. Reading from the file using BufferedReader
-        System.out.println("\n--- Reading from the File ---");
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-            reader.close(); // Always close the reader
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading the file: " + e.getMessage());
-        }
+        myCar.displayCar();
     }
 }
