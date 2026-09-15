@@ -1,41 +1,15 @@
 class Car {
-    // Private variables (Data Hiding)
     private String brand;
-    private int year;
+    private Engine engine; // "Has-a" relationship (Car has an Engine)
 
-    // Constructor to initialize values
-    public Car(String brand, int year) {
-        setBrand(brand);
-        setYear(year);
-    }
-
-    // Getter for brand
-    public String getBrand() {
-        return brand;
-    }
-
-    // Setter for brand (with validation logic if needed)
-    public void setBrand(String brand) {
+    public Car(String brand, String engineType, int horsepower) {
         this.brand = brand;
+        // Composition: Engine object is created inside Car constructor
+        this.engine = new Engine(engineType, horsepower);
     }
 
-    // Getter for year
-    public int getYear() {
-        return year;
-    }
-
-    // Setter for year with a simple validation rule
-    public void setYear(int year) {
-        if (year > 1885) { // First car was invented around 1886
-            this.year = year;
-        } else {
-            System.out.println("Invalid year! Setting default to 2000.");
-            this.year = 2000;
-        }
-    }
-
-    public void displayInfo() {
-        System.out.println("Car Brand: " + brand + ", Year: " + year);
+    public void startCar() {
+        System.out.println(brand + " is ready to move.");
+        engine.start(); // Delegating task to engine object
     }
 }
-
