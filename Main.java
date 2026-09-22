@@ -1,43 +1,41 @@
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
+// 1. Car Class: Responsible ONLY for holding car data
+class Car {
+    private String brand;
+    private int year;
 
-// 1. Creating a Custom Annotation
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@interface CarInfo {
-    String project();
-    int version() default 1;
+    public Car(String brand, int year) {
+        this.brand = brand;
+        this.year = year;
+    }
+
+    public String getBrand() { return brand; }
+    public int getYear() { return year; }
 }
 
-// 2. Class using the Custom Annotation
-class SmartCar {
-    @CarInfo(project = "Autonomous Driving", version = 2)
-    public void startAPU() {
-        System.out.println("APU started successfully.");
+// 2. CarDatabaseManager: Responsible ONLY for database operations
+class CarDatabaseManager {
+    public void saveToDatabase(Car car) {
+        System.out.println("[Database] Saving " + car.getBrand() + " (" + car.getYear() + ") to MySQL Database...");
+    }
+}
+
+// 3. CarPrinter: Responsible ONLY for printing/displaying car details
+class CarPrinter {
+    public void printCarDetails(Car car) {
+        System.out.println("[Printer] Car Info -> Brand: " + car.getBrand() + ", Year: " + car.getYear());
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        SmartCar car = new SmartCar();
+        // Creating car object
+        Car myCar = new Car("Tesla Model S", 2026);
 
-        try {
-            // 3. Using Reflection to inspect annotations at runtime
-            Method method = car.getClass().getMethod("startAPU");
-            
-            if (method.isAnnotationPresent(CarInfo.class)) {
-                CarInfo info = method.getAnnotation(CarInfo.class);
-                System.out.println("Annotation Data Found -> Project: " + info.project() + ", Version: " + info.version());
-            }
+        // Using specialized classes for specialized responsibilities
+        CarPrinter printer = new CarPrinter();
+        printer.printCarDetails(myCar);
 
-            // Invoking the method using reflection
-            method.invoke(car);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        CarDatabaseManager dbManager = new CarDatabaseManager();
+        dbManager.saveToDatabase(myCar);
     }
 }
