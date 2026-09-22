@@ -1,41 +1,43 @@
-// 1. Common Interface for Invoice Generator (Open for extension)
-interface InvoiceGenerator {
-    void generateInvoice(String carModel);
-}
-
-// 2. Local Invoice Implementation
-class LocalInvoiceGenerator implements InvoiceGenerator {
-    @Override
-    public void generateInvoice(String carModel) {
-        System.out.println("Generating Local Invoice for: " + carModel + " (Tax: Local Sri Lankan Rates)");
+// 1. Base Class for Vehicles
+class Vehicle {
+    public void startEngine() {
+        System.out.println("Vehicle engine started.");
     }
 }
 
-// 3. Online Invoice Implementation (Added later without modifying existing classes!)
-class OnlineInvoiceGenerator implements InvoiceGenerator {
+// 2. Gas Car extends Vehicle perfectly
+class GasCar extends Vehicle {
     @Override
-    public void generateInvoice(String carModel) {
-        System.out.println("Generating Online Invoice for: " + carModel + " (Tax: International/Online Rates + Gateway Fee)");
+    public void startEngine() {
+        System.out.println("Gas car engine started with V8 roar.");
     }
 }
 
-// 4. Processing Manager that works with any InvoiceGenerator (Closed for modification)
-class InvoiceProcessor {
-    public void process(InvoiceGenerator generator, String carModel) {
-        generator.generateInvoice(carModel);
+// 3. Electric Car extends Vehicle and respects LSP
+class ElectricCar extends Vehicle {
+    @Override
+    public void startEngine() {
+        System.out.println("Electric car power system activated silently.");
+    }
+}
+
+// 4. A helper class that processes any Vehicle safely (Demonstrating LSP)
+class VehicleWorkshop {
+    public static void serviceVehicle(Vehicle vehicle) {
+        System.out.println("Bringing vehicle into workshop bay...");
+        vehicle.startEngine(); // Works perfectly whether it's a GasCar or ElectricCar!
+        System.out.println("Service completed successfully.\n");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        InvoiceProcessor processor = new InvoiceProcessor();
+        Vehicle regularCar = new GasCar();
+        Vehicle tesla = new ElectricCar();
 
-        // Processing Local Invoice
-        InvoiceGenerator localInvoice = new LocalInvoiceGenerator();
-        processor.process(localInvoice, "Toyota Prius");
-
-        // Processing Online Invoice (Seamlessly extended without touching old code)
-        InvoiceGenerator onlineInvoice = new OnlineInvoiceGenerator();
-        processor.process(onlineInvoice, "Tesla Model S");
+        // Testing Liskov Substitution Principle
+        // Both child classes can substitute the base class (Vehicle) without breaking the program
+        VehicleWorkshop.serviceVehicle(regularCar);
+        VehicleWorkshop.serviceVehicle(tesla);
     }
 }
