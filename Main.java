@@ -1,43 +1,52 @@
-// 1. Base Class for Vehicles
-class Vehicle {
-    public void startEngine() {
-        System.out.println("Vehicle engine started.");
-    }
+// 1. Small, specific interfaces (Segregated Interfaces)
+interface Drivable {
+    void drive();
 }
 
-// 2. Gas Car extends Vehicle perfectly
-class GasCar extends Vehicle {
+interface Chargeable {
+    void chargeBattery();
+}
+
+interface Refuelable {
+    void refuelGas();
+}
+
+// 2. ElectricCar implements only what it needs
+class ElectricCar implements Drivable, Chargeable {
     @Override
-    public void startEngine() {
-        System.out.println("Gas car engine started with V8 roar.");
+    public void drive() {
+        System.out.println("Electric car is driving silently.");
     }
-}
 
-// 3. Electric Car extends Vehicle and respects LSP
-class ElectricCar extends Vehicle {
     @Override
-    public void startEngine() {
-        System.out.println("Electric car power system activated silently.");
+    public void chargeBattery() {
+        System.out.println("Charging electric car at Supercharger station.");
     }
 }
 
-// 4. A helper class that processes any Vehicle safely (Demonstrating LSP)
-class VehicleWorkshop {
-    public static void serviceVehicle(Vehicle vehicle) {
-        System.out.println("Bringing vehicle into workshop bay...");
-        vehicle.startEngine(); // Works perfectly whether it's a GasCar or ElectricCar!
-        System.out.println("Service completed successfully.\n");
+// 3. GasCar implements only what it needs (No forced empty methods for charging!)
+class GasCar implements Drivable, Refuelable {
+    @Override
+    public void drive() {
+        System.out.println("Gas car is driving with engine power.");
+    }
+
+    @Override
+    public void refuelGas() {
+        System.out.println("Refueling gas car at fuel station.");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Vehicle regularCar = new GasCar();
-        Vehicle tesla = new ElectricCar();
+        ElectricCar tesla = new ElectricCar();
+        tesla.drive();
+        tesla.chargeBattery();
 
-        // Testing Liskov Substitution Principle
-        // Both child classes can substitute the base class (Vehicle) without breaking the program
-        VehicleWorkshop.serviceVehicle(regularCar);
-        VehicleWorkshop.serviceVehicle(tesla);
+        System.out.println("-------------------");
+
+        GasCar bmw = new GasCar();
+        bmw.drive();
+        bmw.refuelGas();
     }
 }
