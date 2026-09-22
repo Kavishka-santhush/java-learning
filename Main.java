@@ -1,41 +1,41 @@
-// 1. Car Class: Responsible ONLY for holding car data
-class Car {
-    private String brand;
-    private int year;
-
-    public Car(String brand, int year) {
-        this.brand = brand;
-        this.year = year;
-    }
-
-    public String getBrand() { return brand; }
-    public int getYear() { return year; }
+// 1. Common Interface for Invoice Generator (Open for extension)
+interface InvoiceGenerator {
+    void generateInvoice(String carModel);
 }
 
-// 2. CarDatabaseManager: Responsible ONLY for database operations
-class CarDatabaseManager {
-    public void saveToDatabase(Car car) {
-        System.out.println("[Database] Saving " + car.getBrand() + " (" + car.getYear() + ") to MySQL Database...");
+// 2. Local Invoice Implementation
+class LocalInvoiceGenerator implements InvoiceGenerator {
+    @Override
+    public void generateInvoice(String carModel) {
+        System.out.println("Generating Local Invoice for: " + carModel + " (Tax: Local Sri Lankan Rates)");
     }
 }
 
-// 3. CarPrinter: Responsible ONLY for printing/displaying car details
-class CarPrinter {
-    public void printCarDetails(Car car) {
-        System.out.println("[Printer] Car Info -> Brand: " + car.getBrand() + ", Year: " + car.getYear());
+// 3. Online Invoice Implementation (Added later without modifying existing classes!)
+class OnlineInvoiceGenerator implements InvoiceGenerator {
+    @Override
+    public void generateInvoice(String carModel) {
+        System.out.println("Generating Online Invoice for: " + carModel + " (Tax: International/Online Rates + Gateway Fee)");
+    }
+}
+
+// 4. Processing Manager that works with any InvoiceGenerator (Closed for modification)
+class InvoiceProcessor {
+    public void process(InvoiceGenerator generator, String carModel) {
+        generator.generateInvoice(carModel);
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        // Creating car object
-        Car myCar = new Car("Tesla Model S", 2026);
+        InvoiceProcessor processor = new InvoiceProcessor();
 
-        // Using specialized classes for specialized responsibilities
-        CarPrinter printer = new CarPrinter();
-        printer.printCarDetails(myCar);
+        // Processing Local Invoice
+        InvoiceGenerator localInvoice = new LocalInvoiceGenerator();
+        processor.process(localInvoice, "Toyota Prius");
 
-        CarDatabaseManager dbManager = new CarDatabaseManager();
-        dbManager.saveToDatabase(myCar);
+        // Processing Online Invoice (Seamlessly extended without touching old code)
+        InvoiceGenerator onlineInvoice = new OnlineInvoiceGenerator();
+        processor.process(onlineInvoice, "Tesla Model S");
     }
 }
